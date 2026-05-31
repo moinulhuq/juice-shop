@@ -43,7 +43,7 @@ jobs:
     parameters:
       context: juice-shop-context
       targetUrl: http://localhost:3000
-      specificationFile: /zap/wrk/swagger.yml # ◄ FIXED: Changed parameter key from 'file' to 'specificationFile'
+      specFile: /zap/wrk/swagger.yml       # ◄ FIXED: Changed to specFile
 
   - type: activeScan
     parameters:
