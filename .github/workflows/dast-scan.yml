@@ -27,12 +27,14 @@ jobs:
 
       - name: Stand Up Application Stack
         run: |
-          docker run -d -p 3000:3000 --name staging-app ${{ secrets.DOCKERHUB_USERNAME }}/juice-shop:latest
-          sleep 10
+          docker run -d --net=host --name staging-app ${{ secrets.DOCKERHUB_USERNAME }}/juice-shop:latest
+          sleep 15
 
       - name: Run Self-Contained ZAP Scan
         run: |
+          chmod 777 ${{ github.workspace }}
           docker run --rm \
+            --net=host \
             -v ${{ github.workspace }}:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable zap.sh \
             -cmd -autorun /zap/wrk/juiceshop-plan.yaml
