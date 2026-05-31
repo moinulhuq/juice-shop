@@ -10,7 +10,7 @@ env:
         method: "json"
         parameters:
           loginUrl: "http://localhost:3000/rest/user/login"
-          loginRequestData: '{"email":"{%username%}","password":"{%password%"}'
+          loginRequestData: '{"email":"{%username%}","password":"{%password%}"}' # ◄ FIXED Token Brace
         verification:
           method: "response"
           loggedInRegex: '\bLogout\b'
@@ -43,7 +43,7 @@ jobs:
     parameters:
       context: juice-shop-context
       targetUrl: http://localhost:3000
-      specFile: /zap/wrk/swagger.json       # ◄ FIXED: Changed to specFile
+      specFile: /zap/wrk/swagger.json
 
   - type: activeScan
     parameters:
