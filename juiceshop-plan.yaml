@@ -1,4 +1,4 @@
----
+--
 env:
   contexts:
     - name: juice-shop-context
@@ -39,12 +39,11 @@ jobs:
       maxAlertsPerRule: 0
       scanOnlyInScope: true
 
-  - type: spiderAjax
+  - type: openapi
     parameters:
       context: juice-shop-context
-      url: http://localhost:3000
-      browserId: firefox-headless
-      runOnlyIfModern: false
+      targetUrl: http://localhost:3000
+      file: /zap/wrk/swagger.yml
 
   - type: activeScan
     parameters:
