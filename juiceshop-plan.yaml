@@ -23,17 +23,16 @@ env:
             password: "admin123"
   parameters:
     failOnError: false
-    failOnWarning: false                # ◄ Ignores schema warnings for exit status calculation
+    failOnWarning: false
     progressToStdout: true
 
 jobs:
   - type: replacer
     rules:
       - description: "Inject Admin Token"
-        matchType: "req_header"         # ◄ FIXED: Aligned with standard ZAP Automation parameter keys
+        matchType: "req_header"
         matchString: "Authorization"
-        replacementString: "Bearer {%token%}" # ◄ FIXED: Changed to replacementString
-        enabled: true
+        replacementString: "Bearer {%token%}"
 
   - type: passiveScan-config
     parameters:
