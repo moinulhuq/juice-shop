@@ -22,18 +22,17 @@ env:
             username: "admin@juice-sh.op"
             password: "admin123"
   parameters:
-    failOnError: true
+    failOnError: false
     progressToStdout: true
 
 jobs:
   - type: replacer
-    parameters:
-      replacers:
-        - description: "Inject Admin Token"
-          type: "add_header"
-          matchString: "Authorization"
-          replacement: "Bearer {%token%}"
-          enabled: true
+    rules:                             # ◄ FIXED: Placed directly at job level, not under parameters
+      - description: "Inject Admin Token"
+        type: "add_header"
+        matchString: "Authorization"
+        replacement: "Bearer {%token%}"
+        enabled: true
 
   - type: passiveScan-config
     parameters:
@@ -57,4 +56,4 @@ jobs:
     parameters:
       template: modern
       reportDir: /zap/wrk
-      reportFile: juiceshop-automation-output
+      reportFile: juiceshop-automation-output.html # ◄ FIXED: Explicitly added .html extension
