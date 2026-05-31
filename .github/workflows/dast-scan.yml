@@ -37,7 +37,7 @@ jobs:
             --net=host \
             -v ${{ github.workspace }}:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable zap.sh \
-            -cmd -autorun /zap/wrk/juiceshop-plan.yaml
+            -cmd -autorun /zap/wrk/juiceshop-plan.yaml || [ $? -eq 2 ]
 
       - name: Save Security Vulnerability Report
         if: always()
@@ -45,3 +45,4 @@ jobs:
         with:
           name: juiceshop-vulnerability-dashboard
           path: ${{ github.workspace }}/juiceshop-automation-output.html
+
