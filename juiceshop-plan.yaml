@@ -3,13 +3,13 @@ env:
   contexts:
     - name: juice-shop-context
       urls:
-        - http://host.docker.internal:3000
+        - http://localhost:3000
       includePaths: []
       excludePaths: []
       authentication:
         method: "json"
         parameters:
-          loginUrl: "http://host.docker.internal:3000/rest/user/login"
+          loginUrl: "http://localhost:3000/rest/user/login"
           loginRequestData: '{"email":"{%username%}","password":"{%password%"}'
         verification:
           method: "response"
@@ -28,7 +28,7 @@ env:
 jobs:
   - type: replacer
     parameters:
-      rules:
+      replacers:
         - description: "Inject Admin Token"
           type: "add_header"
           matchString: "Authorization"
@@ -43,56 +43,15 @@ jobs:
   - type: spiderAjax
     parameters:
       context: juice-shop-context
-      url: http://host.docker.internal:3000
+      url: http://localhost:3000
       browserId: firefox-headless
       runOnlyIfModern: false
-
-  - type: activeScan-config
-    parameters:
-      maxScanDurationInMins: 10
-      maxRuleDurationInMins: 2
-      maxAlertsPerRule: 5
-    policyDefinition:
-      defaultAttackStrength: "medium"
-      defaultAlertThreshold: "medium"
-      rules:
-        - id: 40018
-          name: "SQL Injection"
-          attackStrength: "high"
-          alertThreshold: "medium"
-        - id: 40012
-          name: "Reflected Cross Site Scripting"
-          attackStrength: "high"
-          alertThreshold: "medium"
-        - id: 40003
-          name: "Remote File Inclusion"
-          attackStrength: "medium"
-          alertThreshold: "high"
-        - id: 90019
-          name: "Cloud Metadata Access"
-          attackStrength: "off"
-        - id: 40014
-          name: "Windows Registry Disclosure"
-          attackStrength: "off"
-
-  - type: alertFilter
-    parameters:
-      context: juice-shop-context
-    rules:
-      - id: 10021
-        name: "X-Content-Type-Options Header Missing"
-        url: "http://host.docker.internal:3000/assets/.*"
-        parameter: ""
-        newRisk: "False Positive"
-      - id: 10038
-        name: "Content Security Policy (CSP) Header Not Set"
-        url: "http://host.docker.internal:3000/public/.*"
-        parameter: ""
-        newRisk: "Info"
 
   - type: activeScan
     parameters:
       context: juice-shop-context
+      maxScanDurationInMins: 10
+      maxRuleDurationInMins: 2
 
   - type: report
     parameters:
