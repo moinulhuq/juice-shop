@@ -23,6 +23,7 @@ env:
             password: "admin123"
   parameters:
     failOnError: false
+    failOnWarning: false                # ◄ Ignores schema warnings for exit status calculation
     progressToStdout: true
 
 jobs:
