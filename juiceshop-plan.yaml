@@ -27,11 +27,11 @@ env:
 
 jobs:
   - type: replacer
-    rules:                             # ◄ FIXED: Placed directly at job level, not under parameters
+    rules:
       - description: "Inject Admin Token"
-        type: "add_header"
+        matchType: "req_header"         # ◄ FIXED: Aligned with standard ZAP Automation parameter keys
         matchString: "Authorization"
-        replacement: "Bearer {%token%}"
+        replacementString: "Bearer {%token%}" # ◄ FIXED: Changed to replacementString
         enabled: true
 
   - type: passiveScan-config
@@ -56,4 +56,4 @@ jobs:
     parameters:
       template: modern
       reportDir: /zap/wrk
-      reportFile: juiceshop-automation-output.html # ◄ FIXED: Explicitly added .html extension
+      reportFile: juiceshop-automation-output.html
