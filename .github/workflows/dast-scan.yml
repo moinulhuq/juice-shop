@@ -1,0 +1,45 @@
+name: DevSecOps DAST Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  dast-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Application Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/juice-shop:latest
+
+      - name: Stand Up Application Stack
+        run: |
+          docker run -d -p 3000:3000 --name staging-app ${{ secrets.DOCKERHUB_USERNAME }}/juice-shop:latest
+          sleep 10
+
+      - name: Run Self-Contained ZAP Scan
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/zap/wrk/:rw \
+            ghcr.io/zaproxy/zaproxy:stable zap.sh \
+            -cmd -autorun /zap/wrk/juiceshop-plan.yaml
+
+      - name: Save Security Vulnerability Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juiceshop-vulnerability-dashboard
+          path: ${{ github.workspace }}/juiceshop-automation-output.html
